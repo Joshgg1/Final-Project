@@ -21,7 +21,110 @@
 		// Stores keys that have been newly pressed since last update
 		var newkeys = [];
 
+		class smileClass
+		{
 
+		// Constructor
+			constructor()
+			{
+				this.x = 325;
+				this.y = 325;
+				this.width = 100
+				this.height = 100
+
+				this.img = new Image();
+				this.img.src = "smile.png";
+				
+			}
+
+			// Movement methods - don't let bread move off the screen
+			moveRight()
+			{
+				
+				this.x += 5;
+				
+			}
+			moveLeft(){
+				
+				this.x -= 5;
+			
+			}
+			moveUp()
+			{
+				
+				this.y -= 5;
+				
+			}
+			moveDown()
+			{
+				
+				this.y += 5;
+				
+			}
+
+			// Draw method
+			draw()
+			{
+				c.drawImage(this.img, this.x, this.y, this.width, this.height);
+			}
+
+
+		}
+		class rectClass
+		{
+
+		// Constructor
+			constructor()
+			{
+				this.x = 100;
+				this.y = 100;
+				this.width = 200
+				this.height = 200
+
+				this.img = new Image();
+				this.img.src = "rectangle.png";
+				
+			}
+
+			//add movement code here
+
+			// Draw method
+			draw()
+			{
+				c.drawImage(this.img, this.x, this.y, this.width, this.height);
+			}
+
+
+		}
+		class starClass
+		{
+
+		// Constructor
+			constructor()
+			{
+				this.x = 100;
+				this.y = 100;
+				this.width = 80
+				this.height = 80
+
+				this.img = new Image();
+				this.img.src = "star.png";
+				
+			}
+
+			//add movement code here
+
+			// Draw method
+			draw()
+			{
+				c.drawImage(this.img, this.x, this.y, this.width, this.height);
+			}
+
+
+		}
+
+		var rectArray = [];
+		var starArray = [];
 
 		// Initializes entire game framework. This method should only be called
 		// once, by the body onload event handler.
@@ -36,6 +139,21 @@
 			c = myCanvas.getContext('2d');
 			cWidth = myCanvas.width;
 			cHeight = myCanvas.height;
+
+			smile = new smileClass();
+			// rect = new rectClass();
+			
+			// star = new starClass();
+
+			for (i = 0; i < 16; i++){
+				rectArray[i] = new rectClass(50*i, 20);
+			}
+
+			for (i = 0; i < 16; i++){
+				starArray[i] = new starClass(50*i, 20);
+			}
+
+
 
 
 			// Start listeners for getting keyboard state
@@ -62,6 +180,24 @@
 
 
 		function gameUpdate(){
+			// curkeys movement
+			if(curkeys[37])
+			{
+				smile.moveLeft()
+			}
+		
+			if(curkeys[39])
+			{
+				smile.moveRight()
+			}
+			if(curkeys[40])
+			{
+				smile.moveDown()
+			}
+			if(curkeys[38])
+			{
+				smile.moveUp()
+			}
 			
 			
 			// DO NOT ADD OR MODIFY ANY CODE BELOW HERE
@@ -85,6 +221,20 @@
 			// Clear the canvas before we draw the current frame
 			c.clearRect(0,0,cWidth,cHeight);
 
+
+			//draw
+			smile.draw()
+			
+
+			for (i = 0; i < 16; i++)
+			{
+				rectArray[i].draw();
+			}
+			for (i = 0; i < 16; i++)
+			{
+				starArray[i].draw();
+			}
+
 			
 		}
 
@@ -96,7 +246,7 @@
 
 <body onload="gameFrameworkInit()">
 	
-	<canvas id="myCanvas" width="800" height="600"></canvas>
+	<canvas id="myCanvas" width="800" height="600" style="background: url('background.webp')"></canvas>
 
 </body>
 
