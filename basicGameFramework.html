@@ -85,6 +85,24 @@
 				this.img.src = "rectangle.png";
 				
 			}
+			wrap()
+			{
+				//
+				// ADD YOUR MOVEMENT CODE HERE
+				//
+				this.x -= 5
+
+				//
+				// ADD YOUR WRAP LOGIC HERE
+				//
+				if(this.x < -100)
+                {
+                    this.x = +900
+                }
+
+
+             
+			 }
 
 			//add movement code here
 
@@ -141,7 +159,7 @@
 			cHeight = myCanvas.height;
 
 			smile = new smileClass();
-			// rect = new rectClass();
+			rect = new rectClass();
 			
 			// star = new starClass();
 
@@ -198,6 +216,9 @@
 			{
 				smile.moveUp()
 			}
+			rect.wrap()
+
+			
 			
 			
 			// DO NOT ADD OR MODIFY ANY CODE BELOW HERE
@@ -229,6 +250,15 @@
 			for (i = 0; i < 16; i++)
 			{
 				rectArray[i].draw();
+				rectArray[i].wrap();
+				if(rectArray[i].x < 0)
+                {
+                    rectArray[i].y = Math.floor(Math.random() * (600))
+					
+                }
+				
+				
+				
 			}
 			for (i = 0; i < 16; i++)
 			{
