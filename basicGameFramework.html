@@ -21,6 +21,9 @@
 		// Stores keys that have been newly pressed since last update
 		var newkeys = [];
 
+		// gamestate
+		var gameState = "play";
+
 		class smileClass
 		{
 
@@ -29,8 +32,8 @@
 			{
 				this.x = 325;
 				this.y = 325;
-				this.width = 100
-				this.height = 100
+				this.width = 75
+				this.height = 75
 
 				this.img = new Image();
 				this.img.src = "smile.png";
@@ -41,7 +44,7 @@
 			moveRight()
 			{
 				
-				this.x += 5;
+				this.x += 10;
 				
 			}
 			moveLeft(){
@@ -52,13 +55,13 @@
 			moveUp()
 			{
 				
-				this.y -= 5;
+				this.y -= 10;
 				
 			}
 			moveDown()
 			{
 				
-				this.y += 5;
+				this.y += 10;
 				
 			}
 
@@ -78,8 +81,8 @@
 			{
 				this.x = rectX;
 				this.y = rectY;
-				this.width = 200
-				this.height = 200
+				this.width = 100
+				this.height = 100
 
 				this.img = new Image();
 				this.img.src = "rectangle.png";
@@ -129,6 +132,24 @@
 				this.img.src = "star.png";
 				
 			}
+			wrap()
+			{
+				//
+				// ADD YOUR MOVEMENT CODE HERE
+				//
+				this.x -= 5
+
+				//
+				// ADD YOUR WRAP LOGIC HERE
+				//
+				if(this.x < -100)
+                {
+                    this.x = +900
+                }
+
+
+             
+			 }
 
 			//add movement code here
 
@@ -164,11 +185,11 @@
 			// star = new starClass();
 
 			for (i = 0; i < 16; i++){
-				rectArray[i] = new rectClass(50*i, 20);
+				rectArray[i] = new rectClass(1450*i, 20);
 			}
 
 			for (i = 0; i < 16; i++){
-				starArray[i] = new starClass(50*i, 20);
+				starArray[i] = new starClass(2400*i, 20);
 			}
 
 
@@ -199,24 +220,35 @@
 
 		function gameUpdate(){
 			// curkeys movement
-			if(curkeys[37])
+			if(gameState = "play")
 			{
+				if(curkeys[39])
+				{
+					smile.moveRight()
+				}
+				if(curkeys[40])
+				{
+					smile.moveDown()
+				}
+				if(curkeys[38])
+				{
+					smile.moveUp()
+				}
+				
+				if(newkeys[32])
+				{
+					gameState = "pause";
+					console.log(gameState)
+				}
+				
 				smile.moveLeft()
-			}
+			
 		
-			if(curkeys[39])
-			{
-				smile.moveRight()
-			}
-			if(curkeys[40])
-			{
-				smile.moveDown()
-			}
-			if(curkeys[38])
-			{
-				smile.moveUp()
-			}
-			rect.wrap()
+			
+				rect.wrap()
+			
+			
+			
 
 			
 			
@@ -235,6 +267,7 @@
 			// Last thing the update function does is to schedule itself to be called
 			// again before the next repaint
 			window.requestAnimationFrame(gameUpdate);
+			}
 		}
 
 
@@ -246,24 +279,34 @@
 			//draw
 			smile.draw()
 			
-
-			for (i = 0; i < 16; i++)
+			if(gameState = "play")
 			{
-				rectArray[i].draw();
-				rectArray[i].wrap();
-				if(rectArray[i].x < 0)
-                {
-                    rectArray[i].y = Math.floor(Math.random() * (600))
+				for (i = 0; i < 16; i++)
+				{
+					rectArray[i].draw();
+					rectArray[i].wrap();
+					if(rectArray[i].x < -99)
+					{
+						rectArray[i].y = Math.floor(Math.random() * (600))
+						
+					}
 					
-                }
-				
-				
-				
+					
+					
+				}
+				for (i = 0; i < 16; i++)
+				{
+					starArray[i].draw();
+					starArray[i].wrap();
+					if(starArray[i].x < -99)
+					{
+						starArray[i].y = Math.floor(Math.random() * (600))
+						
+					}
+
+				}
 			}
-			for (i = 0; i < 16; i++)
-			{
-				starArray[i].draw();
-			}
+			
 
 			
 		}
