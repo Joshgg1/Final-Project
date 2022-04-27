@@ -24,6 +24,11 @@
 		// gamestate
 		var gameState = "play";
 
+		var roundsLost = 0;
+		var roundsWon = 0;
+		var highScore = 0;
+		var score = 0;
+
 		class smileClass
 		{
 
@@ -32,8 +37,8 @@
 			{
 				this.x = 325;
 				this.y = 325;
-				this.width = 75
-				this.height = 75
+				this.width = 50
+				this.height = 50
 
 				this.img = new Image();
 				this.img.src = "smile.png";
@@ -44,31 +49,80 @@
 			moveRight()
 			{
 				
-				this.x += 10;
+				this.x += 5;
 				
 			}
-			moveLeft(){
+			 moveLeft(){
 				
-				this.x -= 5;
+			 	this.x -= 5;
 			
-			}
+			 }
 			moveUp()
 			{
 				
-				this.y -= 10;
+				this.y -= 5;
 				
 			}
 			moveDown()
 			{
 				
-				this.y += 10;
+				this.y += 5;
 				
 			}
-
+			intersects(obj){
+				if (this.x < obj.x + obj.width &&
+					this.x + this.width > obj.x &&
+					this.y < obj.y + obj.height &&
+					this.y + this.height > obj.y)
+				{
+					return true;
+				}
+				else{
+					return false;
+				}
+			}
+			update()
+			{
+				for (i = 0; i < 16; i++)
+				{
+					if(this.intersects(rectArray[i]))
+					{
+						roundsLost++
+						console.log(roundsLost)
+						
+						function highScore(score) 
+						{
+							var saved = 0;
+							try { saved = parseFloat(localStorage.highScore); } catch (e) { saved = 0; }
+							if (!(typeof score === 'undefined')) {
+								try { score = parseFloat(score); } catch (e) { score = 0; }
+								if (score>saved) {
+									saved = score;
+									localStorage.highScore = '' + score;
+								}
+							}
+							if (isNaN(saved)) {
+								saved = 0;
+								localStorage.highScore = '0';
+							}
+							return saved;
+						}
+						
+					}
+				}
+				for (i = 0; i < 16; i++)
+				{
+					if(this.intersects(starArray[i]))
+					{
+						score++
+						console.log(score)
+					}
+				}
+			}
 			// Draw method
 			draw()
 			{
-				c.drawImage(this.img, this.x, this.y, this.width, this.height);
+				c.drawImage(this.img, this.x, this.y, this.width, this.height);		
 			}
 
 
@@ -83,6 +137,7 @@
 				this.y = rectY;
 				this.width = 100
 				this.height = 100
+				this.bVisible = true;
 
 				this.img = new Image();
 				this.img.src = "rectangle.png";
@@ -106,13 +161,17 @@
 
              
 			 }
+			 
 
 			//add movement code here
 
 			// Draw method
 			draw()
 			{
-				c.drawImage(this.img, this.x, this.y, this.width, this.height);
+				if(this.bVisible)
+				{
+					c.drawImage(this.img, this.x, this.y, this.width, this.height);
+				}
 			}
 
 
@@ -127,6 +186,7 @@
 				this.y = starY;
 				this.width = 80
 				this.height = 80
+				this.bVisible = true;
 
 				this.img = new Image();
 				this.img.src = "star.png";
@@ -150,13 +210,16 @@
 
              
 			 }
-
+			
 			//add movement code here
 
 			// Draw method
 			draw()
 			{
-				c.drawImage(this.img, this.x, this.y, this.width, this.height);
+				if(this.bVisible)
+				{
+					c.drawImage(this.img, this.x, this.y, this.width, this.height);
+				}
 			}
 
 
@@ -234,6 +297,10 @@
 				{
 					smile.moveUp()
 				}
+				if(curkeys[37])
+				{
+					smile.moveLeft()
+				}
 				
 				if(newkeys[32])
 				{
@@ -241,11 +308,12 @@
 					console.log(gameState)
 				}
 				
-				smile.moveLeft()
+				//smile.moveLeft();
+				smile.update();
 			
 		
 			
-				rect.wrap()
+				rect.wrap();
 			
 			
 			
@@ -278,6 +346,17 @@
 
 			//draw
 			smile.draw()
+
+			c.font = "30px Impact";
+			c.fillText("Rounds Lost: " + roundsLost, 0, 600);
+
+			c.font = "30px Impact";
+			c.fillText("Rounds Won: " + roundsWon, 200, 600);
+
+			c.font = "30px Impact";
+			c.fillText("Score: " + score, 400, 600);
+			c.font = "30px Impact";
+			c.fillText("High Score: " + highScore, 545, 600);
 			
 			if(gameState = "play")
 			{
@@ -319,7 +398,7 @@
 
 <body onload="gameFrameworkInit()">
 	
-	<canvas id="myCanvas" width="800" height="600" style="background: url('background.webp')"></canvas>
+	<canvas id="myCanvas" width="800" height="600" style="background: url('background.jpg')"></canvas>
 
 </body>
 
