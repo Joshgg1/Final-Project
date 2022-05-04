@@ -22,12 +22,18 @@
 		var newkeys = [];
 
 		// gamestate
-		var gameState = "play";
+		var gameState = "intro";
 
 		var roundsLost = 0;
-		var roundsWon = 0;
-		var highScore = 0;
+		
+		
 		var score = 0;
+		var highScore = 0;
+		var bullet = 3;
+		var collect = new Audio('collect.wav')
+		var laser = new Audio('laser.wav')
+		var gameover = new Audio('gameover.wav')
+		var bg = new Audio('background.wav')
 
 		class smileClass
 		{
@@ -69,6 +75,7 @@
 				this.y += 5;
 				
 			}
+			
 			intersects(obj){
 				if (this.x < obj.x + obj.width &&
 					this.x + this.width > obj.x &&
@@ -83,41 +90,69 @@
 			}
 			update()
 			{
+				if(this.y <= -10)
+				{
+					this.y += 5
+				}
+				if(this.y >= 555)
+				{
+					this.y -= 5
+				}
+				if(this.x >= 760)
+				{
+					this.x-= 5
+				}
+				if(this.x <= 0)
+				{
+					this.x+= 5
+				}
 				for (i = 0; i < 16; i++)
 				{
 					if(this.intersects(rectArray[i]))
 					{
+						bg.pause()
+						bg.currentTime = 0
+						gameover.play()
+						gameover.currentTime = 0
 						roundsLost++
 						console.log(roundsLost)
-						
-						function highScore(score) 
+						rectArray[i].x += 10000
+						gameState = "gameover"
+						if(rectArray[i].x >= 5000)
 						{
-							var saved = 0;
-							try { saved = parseFloat(localStorage.highScore); } catch (e) { saved = 0; }
-							if (!(typeof score === 'undefined')) {
-								try { score = parseFloat(score); } catch (e) { score = 0; }
-								if (score>saved) {
-									saved = score;
-									localStorage.highScore = '' + score;
-								}
-							}
-							if (isNaN(saved)) {
-								saved = 0;
-								localStorage.highScore = '0';
-							}
-							return saved;
+							rectArray[i].x = Math.floor(Math.random() * (600))
+							rectArray[i].x = cWidth
 						}
+						if(score > highScore)
+						{
+							highScore = score
+							score = 0
+							console.log(highScore)
+						}
+
 						
 					}
 				}
 				for (i = 0; i < 16; i++)
 				{
-					if(this.intersects(starArray[i]))
+					if(gameState == "play")
 					{
-						score++
-						console.log(score)
-					}
+						if(this.intersects(starArray[i]))
+						{
+							collect.play()
+							collect.currentTime = 0
+							score++
+							//console.log(score)
+							starArray[i].x += 10000
+							
+							if(starArray[i].x >= 5000)
+							{
+								starArray[i].x = Math.floor(Math.random() * (600))
+								starArray[i].x = cWidth
+							}
+						}
 				}
+			}
 			}
 			// Draw method
 			draw()
@@ -127,6 +162,89 @@
 
 
 		}
+		class pebbleClass
+            {
+                constructor(pebbleX, pebbleY)
+                {
+                    // ADD YOUR CONSTRUCTOR CODE HERE FOR THE FOLLOWING ATTRIBUTES:
+                    //		x, y, width, height, img, and bVisible (set to false by default)
+                    this.x = pebbleX;
+                    this.y = pebbleY;
+
+                    this.width = 50;
+                    this.height = 50;
+
+                    this.img = new Image();
+                    this.img.src = "pebble.png";
+
+                    this.bVisible = false;
+                }
+
+
+                // If this pebble is visible, then move it to the right.
+                // If the pebble goes off the screen, mark it invisible.
+                update()
+                {
+                    // ADD YOUR CODE HERE
+                    if(this.bVisible == true)
+                    {
+                        //update the x-coordinate of the pebble so that it moves right
+                        this.x += 5;
+
+                        if(this.x >= cWidth)
+                        {
+                            //change the visibility back to false
+                            //this allows us to throw the pebble again
+                            this.bVisible = false;
+                        }
+                    }
+			
+				for (i = 0; i < 16; i++)
+				{
+					if(this.intersects(rectArray[i]))
+					{
+						rectArray[i].x += 10000
+						
+						
+						if(rectArray[i].x >= 5000)
+						{
+							rectArray[i].x = Math.floor(Math.random() * (600))
+							rectArray[i].x = cWidth
+						}
+					}
+				}
+					
+            }
+
+                // Returns true if this bird intersects with "obj"; returns false otherwise
+                intersects(obj)
+                {
+                    if (this.x < obj.x + obj.width &&
+                        this.x + this.width > obj.x &&
+                        this.y < obj.y + obj.height &&
+                        this.y + this.height > obj.y)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+
+                // If this pebble is visible, then draw it on the screen.
+                draw()
+                {
+                    // ADD YOUR CODE HERE
+                    if(pebble.bVisible == true)
+                    {
+                        c.drawImage(this.img, this.x, this.y, this.width, this.height);
+                    }
+
+                }
+            }
+
+            var pebble = new pebbleClass(-1000000000000000000000000, 450);
 		class rectClass
 		{
 
@@ -135,28 +253,31 @@
 			{
 				this.x = rectX;
 				this.y = rectY;
-				this.width = 100
-				this.height = 100
+				this.width = 50
+				this.height = 50
 				this.bVisible = true;
 
 				this.img = new Image();
-				this.img.src = "rectangle.png";
+				this.img.src = "evilpatrick.jpg";
 				
 			}
 			wrap()
 			{
-				//
-				// ADD YOUR MOVEMENT CODE HERE
-				//
-				this.x -= 5
+				
+					this.x -= 5
 
 				//
 				// ADD YOUR WRAP LOGIC HERE
 				//
-				if(this.x < -100)
-                {
-                    this.x = +900
-                }
+					if(this.x < -100)
+					{
+						this.x = +900
+					}	
+				
+				//
+				// ADD YOUR MOVEMENT CODE HERE
+				//
+				
 
 
              
@@ -167,11 +288,8 @@
 
 			// Draw method
 			draw()
-			{
-				if(this.bVisible)
-				{
-					c.drawImage(this.img, this.x, this.y, this.width, this.height);
-				}
+			{			
+				c.drawImage(this.img, this.x, this.y, this.width, this.height);			
 			}
 
 
@@ -184,8 +302,8 @@
 			{
 				this.x = starX;
 				this.y = starY;
-				this.width = 80
-				this.height = 80
+				this.width = 50
+				this.height = 50
 				this.bVisible = true;
 
 				this.img = new Image();
@@ -194,18 +312,21 @@
 			}
 			wrap()
 			{
+				
+					this.x -= 5
+
+					//
+					// ADD YOUR WRAP LOGIC HERE
+					//
+					if(this.x < -100)
+					{
+						this.x = +900
+					}
+				
 				//
 				// ADD YOUR MOVEMENT CODE HERE
 				//
-				this.x -= 5
-
-				//
-				// ADD YOUR WRAP LOGIC HERE
-				//
-				if(this.x < -100)
-                {
-                    this.x = +900
-                }
+			
 
 
              
@@ -215,15 +336,16 @@
 
 			// Draw method
 			draw()
-			{
-				if(this.bVisible)
-				{
-					c.drawImage(this.img, this.x, this.y, this.width, this.height);
-				}
+			{	
+				
+				c.drawImage(this.img, this.x, this.y, this.width, this.height);
+					
 			}
-
-
+				
 		}
+
+
+		
 
 		var rectArray = [];
 		var starArray = [];
@@ -281,13 +403,45 @@
 
 
 
-		function gameUpdate(){
+		function gameUpdate()
+		{
+			if(gameState == "intro")
+			{
+				if(newkeys[90])
+				{
+					gameState = "play";
+					bg.play()
+					bg.currentTime = 0
+				}
+			}
 			// curkeys movement
-			if(gameState = "play")
+			if(gameState == "gameover")
+			{
+				if(newkeys[90])
+				{
+					smile.x = 0
+					gameState = "play";
+					console.log(gameState)
+					
+					score = 0
+					bullet = 3;
+					bg.play()
+					bg.currentTime = 0
+					
+				}
+			}
+			
+			if(gameState == "play")
 			{
 				if(curkeys[39])
 				{
 					smile.moveRight()
+				}
+				if(newkeys[192])
+				{
+					alert("Dev Cheat Unlocked")
+					score += 100000000
+					bullet += 100000000
 				}
 				if(curkeys[40])
 				{
@@ -302,20 +456,42 @@
 					smile.moveLeft()
 				}
 				
-				if(newkeys[32])
-				{
-					gameState = "pause";
-					console.log(gameState)
-				}
+				
+				if(newkeys[13])
+                {
+					if(bullet > 0)
+					{
+						//if the pebble is not visible
+						if(pebble.bVisible == false)
+						{
+							//set the pebble's visibility to true
+							//unlocks the ability to move the pebble
+							//as well as see it flying across the canvas
+							pebble.bVisible = true;
+
+							//set the location of the pebbles to be wherever the
+							//bird is located on the canvas
+							pebble.x = smile.x + smile.width;
+							pebble.y = smile.y + smile.height/2;
+
+							bullet--;
+							laser.play()
+							laser.currentTime = 0
+						}
+						}
+                }
+				
+				
 				
 				//smile.moveLeft();
 				smile.update();
+				pebble.update();
 			
 		
 			
 				rect.wrap();
 			
-			
+			}
 			
 
 			
@@ -335,30 +511,41 @@
 			// Last thing the update function does is to schedule itself to be called
 			// again before the next repaint
 			window.requestAnimationFrame(gameUpdate);
-			}
+			
+			
 		}
+			
 
 
 		function gameDraw(){
 			// Clear the canvas before we draw the current frame
 			c.clearRect(0,0,cWidth,cHeight);
-
+			
 
 			//draw
 			smile.draw()
-
+			pebble.draw();
 			c.font = "30px Impact";
 			c.fillText("Rounds Lost: " + roundsLost, 0, 600);
 
+			
 			c.font = "30px Impact";
-			c.fillText("Rounds Won: " + roundsWon, 200, 600);
+			c.fillText("Score: " + score, 200, 600);
 
 			c.font = "30px Impact";
-			c.fillText("Score: " + score, 400, 600);
+			c.fillText("High Score: " + highScore, 400, 600);
+
 			c.font = "30px Impact";
-			c.fillText("High Score: " + highScore, 545, 600);
+			c.fillText("Bullets: " + bullet, 600, 600);
+			if(gameState == "intro")
+			{
+				c.fillStyle = "#ff0000";
+				c.font = "22px Impact";
+				c.fillText("Welcome To This Game! Press Z to Start! Avoid the Red Rectangles but collect the Stars!", 10, 250);
+				c.fillText("Press Enter to Fire a Laser! Careful: Only 3 shots ;)", 200, 300);
+			}
 			
-			if(gameState = "play")
+			if(gameState == "play")
 			{
 				for (i = 0; i < 16; i++)
 				{
@@ -384,6 +571,11 @@
 					}
 
 				}
+			}
+			if(gameState == "gameover")
+			{
+				c.font = "40px Impact";
+				c.fillText("GAME OVER! Press Z to Play Again! High Score: " + highScore, 0, 300);
 			}
 			
 
