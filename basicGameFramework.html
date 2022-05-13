@@ -26,7 +26,7 @@
 
 		var roundsLost = 0;
 		
-		
+		// global variables
 		var score = 0;
 		var highScore = 0;
 		var bullet = 3;
@@ -34,125 +34,128 @@
 		var laser = new Audio('laser.wav')
 		var gameover = new Audio('gameover.wav')
 		var bg = new Audio('background.wav')
-
+		var jumpscare = new Audio('jumpscare.mp3')
+		
+		// class for the smile
 		class smileClass
 		{
 
-		// Constructor
-			constructor()
-			{
-				this.x = 325;
-				this.y = 325;
-				this.width = 50
-				this.height = 50
+			// Constructor
+				constructor()
+				{
+					this.x = 325;
+					this.y = 325;
+					this.width = 40
+					this.height = 40
 
-				this.img = new Image();
-				this.img.src = "smile.png";
-				
-			}
+					this.img = new Image();
+					this.img.src = "smile.png";
+					
+				}
 
-			// Movement methods - don't let bread move off the screen
-			moveRight()
-			{
-				
-				this.x += 5;
-				
-			}
-			 moveLeft(){
-				
-			 	this.x -= 5;
-			
-			 }
-			moveUp()
-			{
-				
-				this.y -= 5;
-				
-			}
-			moveDown()
-			{
-				
-				this.y += 5;
-				
-			}
-			
-			intersects(obj){
-				if (this.x < obj.x + obj.width &&
-					this.x + this.width > obj.x &&
-					this.y < obj.y + obj.height &&
-					this.y + this.height > obj.y)
+				// Movement methods - don't let bread move off the screen
+				moveRight()
 				{
-					return true;
+					
+					this.x += 5;
+					
 				}
-				else{
-					return false;
+				moveLeft(){
+					
+					this.x -= 5;
+				
 				}
-			}
-			update()
-			{
-				if(this.y <= -10)
+				moveUp()
 				{
-					this.y += 5
+					
+					this.y -= 5;
+					
 				}
-				if(this.y >= 555)
+				moveDown()
 				{
-					this.y -= 5
+					
+					this.y += 5;
+					
 				}
-				if(this.x >= 760)
-				{
-					this.x-= 5
-				}
-				if(this.x <= 0)
-				{
-					this.x+= 5
-				}
-				for (i = 0; i < 16; i++)
-				{
-					if(this.intersects(rectArray[i]))
+				
+				intersects(obj){
+					if (this.x < obj.x + obj.width &&
+						this.x + this.width > obj.x &&
+						this.y < obj.y + obj.height &&
+						this.y + this.height > obj.y)
 					{
-						bg.pause()
-						bg.currentTime = 0
-						gameover.play()
-						gameover.currentTime = 0
-						roundsLost++
-						console.log(roundsLost)
-						rectArray[i].x += 10000
-						gameState = "gameover"
-						if(rectArray[i].x >= 5000)
-						{
-							rectArray[i].x = Math.floor(Math.random() * (600))
-							rectArray[i].x = cWidth
-						}
-						if(score > highScore)
-						{
-							highScore = score
-							score = 0
-							console.log(highScore)
-						}
-
-						
+						return true;
+					}
+					else{
+						return false;
 					}
 				}
-				for (i = 0; i < 16; i++)
+				update()
 				{
-					if(gameState == "play")
+					if(this.y <= -10)
 					{
-						if(this.intersects(starArray[i]))
+						this.y += 5
+					}
+					if(this.y >= 555)
+					{
+						this.y -= 5
+					}
+					if(this.x >= 760)
+					{
+						this.x-= 5
+					}
+					if(this.x <= 0)
+					{
+						this.x+= 5
+					}
+					for (i = 0; i < 16; i++)
+					{
+						if(this.intersects(rectArray[i]))
 						{
-							collect.play()
-							collect.currentTime = 0
-							score++
-							//console.log(score)
-							starArray[i].x += 10000
-							
-							if(starArray[i].x >= 5000)
+							bg.pause()
+							bg.currentTime = 0
+							gameover.play()
+							gameover.currentTime = 0
+							roundsLost++
+							console.log(roundsLost)
+							rectArray[i].x += 10000
+							gameState = "gameover"
+							if(rectArray[i].x >= 5000)
 							{
-								starArray[i].x = Math.floor(Math.random() * (600))
-								starArray[i].x = cWidth
+								rectArray[i].x = Math.floor(Math.random() * (600))
+								rectArray[i].x = cWidth
 							}
+							if(score > highScore)
+							{
+								highScore = score
+								score = 0
+								console.log(highScore)
+							}
+
+							
 						}
+					}
+					for (i = 0; i < 16; i++)
+					{
+						if(gameState == "play")
+						{
+							if(this.intersects(starArray[i]))
+							{
+								collect.play()
+								collect.currentTime = 0
+								score++
+								bullet++
+								//console.log(score)
+								starArray[i].x += 1000
+								
+								if(starArray[i].x >= 900)
+								{
+									starArray[i].x = Math.floor(Math.random() * (600))
+									starArray[i].x = cWidth
+								}
+							}
+					}
 				}
-			}
 			}
 			// Draw method
 			draw()
@@ -208,7 +211,7 @@
 						
 						if(rectArray[i].x >= 5000)
 						{
-							rectArray[i].x = Math.floor(Math.random() * (600))
+							rectArray[i].y = Math.floor(Math.random() * (600))
 							rectArray[i].x = cWidth
 						}
 					}
@@ -244,7 +247,7 @@
                 }
             }
 
-            var pebble = new pebbleClass(-1000000000000000000000000, 450);
+            var pebble = new pebbleClass(-100000, 450);
 		class rectClass
 		{
 
@@ -346,7 +349,7 @@
 
 
 		
-
+		// arrays
 		var rectArray = [];
 		var starArray = [];
 
@@ -370,11 +373,11 @@
 			// star = new starClass();
 
 			for (i = 0; i < 16; i++){
-				rectArray[i] = new rectClass(1450*i, 20);
+				rectArray[i] = new rectClass(1000*i, 20);
 			}
 
 			for (i = 0; i < 16; i++){
-				starArray[i] = new starClass(2400*i, 20);
+				starArray[i] = new starClass(1000*i, 20);
 			}
 
 
@@ -440,7 +443,7 @@
 				if(newkeys[192])
 				{
 					alert("Dev Cheat Unlocked")
-					score += 100000000
+					
 					bullet += 100000000
 				}
 				if(curkeys[40])
@@ -574,8 +577,16 @@
 			}
 			if(gameState == "gameover")
 			{
+				
+				jumpscare.play()
+				jumpscare.currentTime = 0
+				
 				c.font = "40px Impact";
 				c.fillText("GAME OVER! Press Z to Play Again! High Score: " + highScore, 0, 300);
+					
+				
+				
+				
 			}
 			
 
