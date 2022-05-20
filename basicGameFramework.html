@@ -5,8 +5,12 @@
 	<style>
 		canvas{
 			background: #dddddd;
+			
 		}
+		
 	</style>
+	<link rel="icon" href="smile.png">
+	<title>The Smile Game</title>
 
 	<script>
 		// Canvas context; used to call Canvas methods
@@ -33,9 +37,59 @@
 		var collect = new Audio('collect.wav')
 		var laser = new Audio('laser.wav')
 		var gameover = new Audio('gameover.wav')
-		var bg = new Audio('background.wav')
+		var bg = new Audio('background.mp3')
 		var jumpscare = new Audio('jumpscare.mp3')
+		var jumpscare2 = new Audio('jumpscare2.mp3')
+		class infiniteScrollingBackgroundClass{
+			constructor(bgSrc,						// Name of the image file (string)
+						bgSpeed)					// Speed of scrolling (integer)
+			{
+				this.img = new Image();
+				this.img.src = "background.jpg";
+				this.x1 = 0;
+				this.x2 = cWidth;
+				this.speed = 5;
+			}
+
+			// Scrolls the background image to the right
+			// (So the character looks like it's moving to the left)
+			scrollRight()
+			{
+				this.x1 += this.speed;
+				this.x2 += this.speed;
+
+				if (this.x2 > cWidth){
+					this.x1 = -cWidth;
+					this.x2 = 0;
+				}
+				
+				
+				
+			}
+			scrollLeft()
+			{
+				this.x1 -= this.speed;
+				this.x2 -= this.speed;
+
+				if (this.x2 < 0){
+					this.x1 = 0;
+					this.x2 = cWidth;
+				}
+				
+			}
+
+
+			// Scrolls the background image to the left
+			// (So the character looks like it's moving to the right)
 		
+
+			// Draw the background image
+			draw(){
+				c.drawImage(this.img, this.x1, 0, cWidth, cHeight);
+				c.drawImage(this.img, this.x2, 0, cWidth, cHeight);
+			}
+		}
+
 		// class for the smile
 		class smileClass
 		{
@@ -369,6 +423,7 @@
 
 			smile = new smileClass();
 			rect = new rectClass();
+			bgS = new infiniteScrollingBackgroundClass();
 			
 			// star = new starClass();
 
@@ -415,6 +470,8 @@
 					gameState = "play";
 					bg.play()
 					bg.currentTime = 0
+					jumpscare2.play()
+					jumpscare2.currentTime = 0
 				}
 			}
 			// curkeys movement
@@ -436,6 +493,7 @@
 			
 			if(gameState == "play")
 			{
+				bgS.scrollLeft()
 				if(curkeys[39])
 				{
 					smile.moveRight()
@@ -523,6 +581,7 @@
 		function gameDraw(){
 			// Clear the canvas before we draw the current frame
 			c.clearRect(0,0,cWidth,cHeight);
+			bgS.draw()
 			
 
 			//draw
@@ -544,8 +603,8 @@
 			{
 				c.fillStyle = "#ff0000";
 				c.font = "22px Impact";
-				c.fillText("Welcome To This Game! Press Z to Start! Avoid the Red Rectangles but collect the Stars!", 10, 250);
-				c.fillText("Press Enter to Fire a Laser! Careful: Only 3 shots ;)", 200, 300);
+				c.fillText("Welcome To This Game! Press Z to Start! Avoid the waves of Red Rectangles ", 100, 250);
+				c.fillText("but collect the Stars! Press Enter to Fire a Laser! Careful: Only 3 shots ;) TURN UP VOLUME 100%", 0, 300);
 			}
 			
 			if(gameState == "play")
@@ -583,7 +642,10 @@
 				
 				c.font = "40px Impact";
 				c.fillText("GAME OVER! Press Z to Play Again! High Score: " + highScore, 0, 300);
-					
+				
+
+				
+			
 				
 				
 				
